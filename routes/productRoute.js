@@ -1,0 +1,15 @@
+const {createProduct, deleteProduct, editProduct} = require("../contoller/admin/product/productController")
+const authcheck = require ("../middleware/authCheck")
+const restrictTo = require("../middleware/restrictTo")
+const router = require("express").Router()
+const catchAsync = require("../services/catchAsync")
+const {multer,storage} = require("../middleware/multerConfig")
+const { viewproducts, viewProduct } = require("../contoller/global/globalController")
+const upload =multer ({storage : storage})
+router.route("/createProduct").post(authcheck,restrictTo("Admin"),upload.single('productImage'), catchAsync(createProduct))
+router.route("/viewProducts").get(catchAsync(viewproducts))
+router.route("/:id").delete(authcheck,restrictTo("Admin"),catchAsync(deleteProduct))
+router.route("/:id").get(catchAsync(viewProduct))
+router.route("/:id").patch(authcheck,restrictTo("Admin"),upload.single('productImage'),catchAsync(editProduct))
+module.exports = router
+   
